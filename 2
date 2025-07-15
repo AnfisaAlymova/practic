@@ -1,0 +1,45 @@
+import { getScore, generateStamps, Stamp, Score } from './gameStamps';
+
+describe('getScore', () => {
+    let gameStamps: Stamp[];
+
+    beforeAll(() => {
+        // Generate test data
+        gameStamps = generateStamps();
+    });
+
+    test('returns initial score if offset is less than the minimum value', () => {
+        const result = getScore(gameStamps, -1);
+        expect(result).toEqual({ home: 0, away: 0 });
+    });
+
+    test('returns the last score if offset is greater than the maximum value', () => {
+        const lastOffset = gameStamps[gameStamps.length - 1].offset;
+        const result = getScore(gameStamps, lastOffset + 100);
+        expect(result).toEqual(gameStamps[gameStamps.length - 1].score);
+    });
+
+    test('returns exact score if offset matches an existing value', () => {
+        const testOffset = gameStamps[500].offset;
+        const result = getScore(gameStamps, testOffset);
+        expect(result).toEqual(gameStamps[500].score);
+    });
+
+    test('returns score at previous offset if no exact match exists', () => {
+        const testOffset = gameStamps[300].offset + 1;
+        const result = getScore(gameStamps, testOffset);
+        expect(result).toEqual(gameStamps[300].score);
+    });
+
+    test('returns initial score for an empty array', () => {
+        const result = getScore([], 100);
+        expect(result).toEqual({ home: 0, away: 0 });
+    });
+
+    test('returns correct score for a random offset', () => {
+        const randomIndex = Math.floor(Math.random() * gameStamps.length);
+        const testOffset = gameStamps[randomIndex].offset;
+        const result = getScore(gameStamps, testOffset);
+        expect(result).toEqual(gameStamps[randomIndex].score);
+    });
+});
