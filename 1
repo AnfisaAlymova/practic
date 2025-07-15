@@ -1,0 +1,27 @@
+export const getScore = (gameStamps: Stamp[], offset: number): Score => {
+    if (gameStamps.length === 0 || offset < gameStamps[0].offset) {
+        return { home: 0, away: 0 };
+    }
+
+    if (offset > gameStamps[gameStamps.length - 1].offset) {
+        return gameStamps[gameStamps.length - 1].score;
+    }
+
+    let left = 0;
+    let right = gameStamps.length - 1;
+
+    while (left <= right) {
+        const mid = Math.floor((left + right) / 2);
+        const currentOffset = gameStamps[mid].offset;
+
+        if (currentOffset === offset) {
+            return gameStamps[mid].score;
+        } else if (currentOffset < offset) {
+            left = mid + 1;
+        } else {
+            right = mid - 1;
+        }
+    }
+
+    return gameStamps[right].score;
+};
